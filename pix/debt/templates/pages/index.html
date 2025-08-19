@@ -19,6 +19,7 @@
             background-color: #f9fafb;
             margin: 0;
             display: flex;
+            flex-direction: column; /* Allow vertical stacking */
             align-items: center;
             justify-content: center;
             min-height: 100vh;
@@ -26,21 +27,31 @@
             box-sizing: border-box;
         }
 
+        .content-wrapper {
+            max-width: 32rem;
+            width: 100%;
+        }
+
         .card {
             background-color: white;
             border-radius: 1.5rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             padding: 2rem;
-            max-width: 32rem;
-            width: 100%;
             text-align: center;
+        }
+        
+        .top-debtors-card {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            text-align: left;
+            max-height: 340px;
+            overflow-y: auto;
         }
 
         .profile-image {
-            width: 8rem;
-            height: 8rem;
-            object-fit: cover;
-            border-radius: 9999px;
+            width: 12rem;
+            height: 12rem;
+            border-radius: 1.5rem;
             margin-left: auto;
             margin-right: auto;
             margin-bottom: 1.5rem;
@@ -59,6 +70,18 @@
             margin-bottom: 2rem;
         }
 
+        .search-wrapper {
+            border: 1px solid #d1d5db;
+            border-radius: 1.5rem;
+            transition: all 0.2s ease-in-out;
+            overflow: hidden;
+            background-color: #f9fafb;
+        }
+        .search-wrapper:focus-within {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+
         .search-container {
             position: relative;
         }
@@ -66,25 +89,39 @@
             width: 100%;
             padding: 0.75rem 1rem;
             font-size: 1.125rem;
-            border: 1px solid #d1d5db;
-            border-radius: 9999px;
-            transition: all 0.2s ease-in-out;
-            box-sizing: border-box;
-        }
-        .search-input:focus {
+            border: none;
             outline: none;
-            box-shadow: 0 0 0 2px #3b82f6;
+            box-sizing: border-box;
+            background: transparent;
         }
-
+        
         #search-results {
-            margin-top: 1.5rem;
+            margin-top: 0;
             text-align: left;
-            min-height: 100px;
+            max-height: 300px;
+            overflow-y: auto;
         }
-        #search-results p {
+        .results-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .result-item {
+            padding: 0.75rem 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+        }
+        .debt-amount {
+            font-weight: 600;
+            color: #16a34a;
+        }
+        .no-results {
             text-align: center;
             color: #9ca3af;
-            padding-top: 1rem;
+            padding: 2rem 1rem;
         }
 
         .htmx-indicator {
@@ -114,45 +151,52 @@
 </head>
 <body>
 
-    <div class="card">
-        <div>
-            <img 
-                src="{{ url_for('debt_static', path='/barriga.jpg') }}"
-                alt="A barriga está esperando..." 
-                class="profile-image"
-                onerror="this.onerror=null;this.src='https://placehold.co/128x128/EFEFEF/333333?text=Imagem';"
-            >
-        </div>
+    <div class="content-wrapper">
+        <div class="card">
+            <div>
+                <img 
+                    src="{{ url_for('debt_static', path='/barriga.jpg') }}" 
+                    alt="A barriga está esperando..." 
+                    class="profile-image"
+                >
+            </div>
 
-        <h1>Pagameupix</h1>
+            <h1>Pagameupix</h1>
+            <p class="subtitle">Os maiores caloteiros estão aqui!</p>
 
-        <div class="search-container">
-            <input 
-                type="search"
-                name="q"
-                class="search-input"
-                placeholder="Digite o nome do devedor..."
-                hx-get="/debt/people/"
-                hx-trigger="keyup changed delay:500ms, search"
-                hx-target="#search-results"
-                hx-indicator=".htmx-indicator"
-            >
-            <div class="htmx-indicator">
-                <svg class="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle style="opacity: 0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path style="opacity: 0.75;" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+            <div class="search-wrapper">
+                <div class="search-container">
+                    <input 
+                        type="search"
+                        name="q"
+                        class="search-input"
+                        placeholder="Digite o nome do devedor..."
+                        hx-get="/debt/people/"
+                        hx-trigger="keyup changed delay:250ms, search"
+                        hx-target="#search-results"
+                        hx-indicator=".htmx-indicator"
+                    >
+                    <div class="htmx-indicator">
+                        <svg class="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle style="opacity: 0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path style="opacity: 0.75;" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div id="search-results">
+                    <!-- Search results will be loaded here by HTMX -->
+                </div>
             </div>
         </div>
 
-        <div id="search-results">
-            <p>Os resultados da busca aparecerão aqui.</p>
+        <div 
+            id="top-debtors-container"
+            class="card top-debtors-card"
+            hx-get="/debt/people/top/"
+            hx-trigger="load"
+        >
+            <p class="no-results">Carregando top devedores...</p>
         </div>
-    </div>
-
-    <div hx-get="/debt/people/top/"
-         hx-trigger="load">
-        Top...
     </div>
 
 </body>

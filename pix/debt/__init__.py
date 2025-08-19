@@ -32,7 +32,6 @@ def search_people(request: Request, q: Optional[str] = None, limit: int = 10, db
     it returns a list of all people up to the limit.
     """
     people_names = service.search_people_by_name(db=db, q=q, field_name="name", limit=limit)
-
     return templates.TemplateResponse(
         request=request, name="partials/people.html", context={"people_names": people_names}
     )

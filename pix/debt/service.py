@@ -27,6 +27,7 @@ def search_people_by_name(
         query = query.filter(models.Person.name.ilike(search_pattern))
 
     results = query.order_by(models.Person.name).limit(limit).all()
+    results = [row[0] for row in results]
 
     return results
 
