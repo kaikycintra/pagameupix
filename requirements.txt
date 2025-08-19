@@ -1,0 +1,6 @@
+fastapi[standard]
+sqlalchemy
+python-dotenv
+jinja2
+pyjwt
+passlib[bcrypt]

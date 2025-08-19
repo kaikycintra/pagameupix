@@ -1,0 +1,15 @@
+<!-- This template receives the top_debtors list and displays it. -->
+<!-- It's used for the initial view of the search results area. -->
+
+{% if top_debtors %}
+  <ul class="results-list">
+    {% for debtor in top_debtors %}
+      <li class="result-item">
+        <span>{{ debtor.name }}</span>
+        <span class="debt-amount">R$ {{ "%.2f"|format(debtor.total_debt) }}</span>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="no-results">Ainda não há devedores no topo da lista.</p>
+{% endif %}

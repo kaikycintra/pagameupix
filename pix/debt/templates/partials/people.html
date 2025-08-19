@@ -1,0 +1,12 @@
+<!-- This template receives a list of names and displays them. -->
+<!-- It's designed to be swapped into the #search-results div. -->
+
+{% if people_names %}
+  <ul class="results-list">
+    {% for name in people_names %}
+      <li class="result-item">{{ name }}</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="no-results">Nenhum devedor encontrado com esse nome.</p>
+{% endif %}

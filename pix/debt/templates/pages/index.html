@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagameupix - Consulta de Dívidas</title>
+    
+    <!-- HTMX for dynamic content -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    
+    <!-- Google Fonts for a clean, modern look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            max-width: 32rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        .profile-image {
+            width: 8rem;
+            height: 8rem;
+            object-fit: cover;
+            border-radius: 9999px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 4px solid white;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+
+        .search-container {
+            position: relative;
+        }
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1.125rem;
+            border: 1px solid #d1d5db;
+            border-radius: 9999px;
+            transition: all 0.2s ease-in-out;
+            box-sizing: border-box;
+        }
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+
+        #search-results {
+            margin-top: 1.5rem;
+            text-align: left;
+            min-height: 100px;
+        }
+        #search-results p {
+            text-align: center;
+            color: #9ca3af;
+            padding-top: 1rem;
+        }
+
+        .htmx-indicator {
+            display: none;
+            opacity: 0;
+            transition: opacity 200ms ease-in;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .htmx-request .htmx-indicator {
+            display: inline-block;
+            opacity: 1;
+        }
+        .spinner {
+            animation: spin 1s linear infinite;
+            height: 1.25rem;
+            width: 1.25rem;
+            color: #6b7280;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div>
+            <img 
+                src="{{ url_for('debt_static', path='/barriga.jpg') }}"
+                alt="A barriga está esperando..." 
+                class="profile-image"
+                onerror="this.onerror=null;this.src='https://placehold.co/128x128/EFEFEF/333333?text=Imagem';"
+            >
+        </div>
+
+        <h1>Pagameupix</h1>
+
+        <div class="search-container">
+            <input 
+                type="search"
+                name="q"
+                class="search-input"
+                placeholder="Digite o nome do devedor..."
+                hx-get="/debt/people/"
+                hx-trigger="keyup changed delay:500ms, search"
+                hx-target="#search-results"
+                hx-indicator=".htmx-indicator"
+            >
+            <div class="htmx-indicator">
+                <svg class="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle style="opacity: 0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path style="opacity: 0.75;" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
+        </div>
+
+        <div id="search-results">
+            <p>Os resultados da busca aparecerão aqui.</p>
+        </div>
+    </div>
+
+    <div hx-get="/debt/people/top/"
+         hx-trigger="load">
+        Top...
+    </div>
+
+</body>
+</html>
